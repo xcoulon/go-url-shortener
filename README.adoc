@@ -1,0 +1,5 @@
+= go-url-shortener
+
+Sample URL shortener written in Golang, to deploy on Kubernetes/Minikube by following the instructions in https://medium.com/@xcoulon/deploying-your-first-web-app-on-minikube-6e98d2884b3a[this article].
+
+License: Apache License 2.0
