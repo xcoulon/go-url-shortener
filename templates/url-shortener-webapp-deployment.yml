@@ -1,0 +1,26 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - image: xcoulon/go-url-shortener:0.1.0
+        name: go-url-shortener
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DATABASE
+          value: url_shortener_db
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          value: mysecretpassword
+        ports:
+        - containerPort: 8080
