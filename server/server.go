@@ -14,6 +14,17 @@ import (
 func New(repository *storage.Repository) *echo.Echo {
 	// starts the HTTP engine to handle requests
 	e := echo.New()
+	// graceful handle of errors, i.e., just logging with the same logger as everywhere else in the app.
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		if he, ok := err.(*echo.HTTPError); ok {
+			logrus.WithField("code", he.Code).Error(he.Message)
+			if msg, ok := he.Message.(string); ok {
+				c.String(he.Code, msg)
+			} else {
+				c.NoContent(he.Code)
+			}
+		}
+	}
 	e.GET("/ping", Ping())
 	e.POST("/", CreateURL(repository))
 	e.GET("/:shortURL", RetrieveURL(repository))

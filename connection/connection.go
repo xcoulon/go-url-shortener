@@ -9,7 +9,7 @@ import (
 
 // New returns a new database connection.
 func New(config *configuration.Configuration) (*gorm.DB, error) {
-	logrus.Infof("Connecting to Postgres database using: host=`%s:%d` dbname=`%s` username=`%s`\n",
+	logrus.Infof("Connecting to Postgres database using: host=`%s:%d` dbname=`%s` username=`%s`",
 		config.GetPostgresHost(), config.GetPostgresPort(), config.GetPostgresDatabase(), config.GetPostgresUser())
 	db, err := gorm.Open("postgres", config.GetPostgresConfig())
 	if err != nil {

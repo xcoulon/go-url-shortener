@@ -33,16 +33,17 @@ func (r *Repository) Create(fullURL string) (*string, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create new shortened URL record in DB")
 	}
-	logrus.Info("Stored URL: %s -> %s", s.LongURL, s.ShortURL)
+	logrus.WithField("long_url", s.LongURL).WithField("short_url", s.ShortURL).Infof("Stored URL in DB")
 	return &shortURL, nil
 }
 
 //Lookup looks-up an entry in the DB
 func (r *Repository) Lookup(shortURL string) (*string, error) {
+	logrus.WithField("short_url", shortURL).Debug("Looking-up by short_url in DB")
 	var record ShortenedURL
 	result := r.db.Where("short_url = ?", shortURL).First(&record)
 	if result.RecordNotFound() {
-		logrus.Warnf("No entry for short_url with value '%s", shortURL)
+		logrus.WithField("short_url", shortURL).Warn("No entry for short_url in DB")
 		return nil, nil
 	} else if result.Error != nil {
 		return nil, errors.Wrapf(result.Error, "failed to look-up shortened URL record in DB")
