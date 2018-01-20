@@ -41,7 +41,9 @@ func Ping() echo.HandlerFunc {
 // CreateURL returns a handler to create an db record from the `full_url` form param of the request.
 func CreateURL(repository *storage.Repository) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		logrus.Infof("Processing incoming request...")
+		scheme := c.Scheme()
+		host := c.Request().Host
+		logrus.Debugf("Processing incoming request on %s://%s%s", scheme, host, c.Request().URL)
 		fullURL := c.FormValue("full_url")
 		if fullURL == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "missing `full_url` form param in request")
@@ -51,8 +53,10 @@ func CreateURL(repository *storage.Repository) echo.HandlerFunc {
 			logrus.Errorf("failed to store url: %v", err)
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to store URL")
 		}
-		c.Response().Header().Set(echo.HeaderLocation, *shortURL)
-		c.String(http.StatusCreated, *shortURL)
+		location := fmt.Sprintf("%s://%s/%s", scheme, host, *shortURL)
+		logrus.Infof("Generated location for further usage: %s", location)
+		c.Response().Header().Set(echo.HeaderLocation, location)
+		c.String(http.StatusCreated, location)
 		return nil
 	}
 }

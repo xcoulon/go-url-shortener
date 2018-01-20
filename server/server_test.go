@@ -34,7 +34,7 @@ func TestServer(t *testing.T) {
 
 	t.Run("POST and GET", func(t *testing.T) {
 		// given
-		req1 := httptest.NewRequest(echo.POST, "/", strings.NewReader("full_url=http://redhat.com"))
+		req1 := httptest.NewRequest(echo.POST, "http://localhost:8080/", strings.NewReader("full_url=http://redhat.com"))
 		req1.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 		rec1 := httptest.NewRecorder()
 		// when
@@ -44,7 +44,8 @@ func TestServer(t *testing.T) {
 		require.NotNil(t, rec1.Header()[echo.HeaderLocation])
 		location := rec1.Header()[echo.HeaderLocation][0]
 		// given
-		req2 := httptest.NewRequest(echo.GET, "/"+location, nil)
+
+		req2 := httptest.NewRequest(echo.GET, location, nil)
 		rec2 := httptest.NewRecorder()
 		// when
 		s.ServeHTTP(rec2, req2)
@@ -56,7 +57,7 @@ func TestServer(t *testing.T) {
 
 	t.Run("GET unknown", func(t *testing.T) {
 		// given
-		req := httptest.NewRequest(echo.GET, "/foo", nil)
+		req := httptest.NewRequest(echo.GET, "http://localhost:8080/foo", nil)
 		rec := httptest.NewRecorder()
 		// when
 		s.ServeHTTP(rec, req)

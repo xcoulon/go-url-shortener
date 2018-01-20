@@ -1,4 +1,4 @@
-package: github.com/xcoulon/golang-postgres-sample
+package: github.com/xcoulon/go-url-shortener
 import:
 - package: github.com/jinzhu/gorm
   version: ^1.0.0

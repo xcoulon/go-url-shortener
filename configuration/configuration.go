@@ -26,7 +26,7 @@ const (
 	varPostgresConnectionMaxIdle    = "postgres.connection.maxidle"
 	varPostgresConnectionMaxOpen    = "postgres.connection.maxopen"
 	varPathToConfig                 = "config.file"
-	varLogLevel                     = "level"
+	varLogLevel                     = "log.level"
 )
 
 // Configuration the application Configuration, based on ENV variables
@@ -41,6 +41,8 @@ func New() *Configuration {
 	}
 	c.v.SetDefault(varPostgresHost, "localhost")
 	c.v.SetDefault(varPostgresPort, 5432)
+	c.v.SetDefault(varPostgresDatabase, "postgres")
+	c.v.SetDefault(varPostgresUser, "postgres")
 	c.v.SetDefault(varPostgresSSLMode, "disable")
 	c.v.SetDefault(varPostgresConnectionTimeout, 5)
 	c.v.SetDefault(varPostgresConnectionMaxIdle, -1)

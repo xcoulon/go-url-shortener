@@ -12,6 +12,12 @@ spec:
         - name: config-volume
           configMap:
             name: app-config
+      initContainers:
+      - name: check-db-ready
+        image: postgres:9.6.5
+        command: ['sh', '-c', 
+          'until pg_isready -h postgres -p 5432; 
+          do echo waiting for database; sleep 2; done;']
       containers:
       - image: xcoulon/go-url-shortener:0.2.0
         name: go-url-shortener
