@@ -11,6 +11,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	// BuildCommit lastest build commit (set by build script)
+	BuildCommit = "unknown"
+	// BuildTime set by build script
+	BuildTime = "unknown"
+)
+
 const (
 	// Constants for viper variable names. Will be used to set
 	// default values as well as to get each value

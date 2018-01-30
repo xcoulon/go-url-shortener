@@ -33,11 +33,16 @@ endif
 .PHONY: build
 build: start-db
 	@echo "building the application image..."
+	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
+	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
 	docker build --build-arg POSTGRES_HOST=`cat .tmp/postgres.host` \
 	  --build-arg POSTGRES_PORT=`cat .tmp/postgres.port` \
 	  --build-arg POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
+	  --build-arg BUILD_COMMIT=$(BUILD_COMMIT) \
+	  --build-arg BUILD_TIME=$(BUILD_TIME) \
 	  . \
-	  -t xcoulon/go-url-shortener:latest
+	  -t xcoulon/go-url-shortener:$(BUILD_COMMIT)
+	docker tag xcoulon/go-url-shortener:$(BUILD_COMMIT) xcoulon/go-url-shortener:latest
 
 .PHONY: kill-db
 kill-db:

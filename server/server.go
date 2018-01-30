@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
+	"github.com/xcoulon/go-url-shortener/configuration"
 	"github.com/xcoulon/go-url-shortener/storage"
 )
 
@@ -25,16 +26,16 @@ func New(repository *storage.Repository) *echo.Echo {
 			}
 		}
 	}
-	e.GET("/ping", Ping())
 	e.POST("/", CreateURL(repository))
 	e.GET("/:shortURL", RetrieveURL(repository))
+	e.GET("/status", Status())
 	return e
 }
 
 // Ping returns a basic `ping/pong` handler
-func Ping() echo.HandlerFunc {
+func Status() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.String(http.StatusOK, "pong!")
+		return c.String(http.StatusOK, fmt.Sprintf("build.time: %s - build.commit: %s", configuration.BuildTime, configuration.BuildCommit))
 	}
 }
 

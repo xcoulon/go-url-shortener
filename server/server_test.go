@@ -21,15 +21,14 @@ func TestServer(t *testing.T) {
 	repository := storage.New(db)
 	s := server.New(repository)
 
-	t.Run("ping", func(t *testing.T) {
+	t.Run("status", func(t *testing.T) {
 		// given
-		req := httptest.NewRequest(echo.GET, "/ping", nil)
+		req := httptest.NewRequest(echo.GET, "/status", nil)
 		rec := httptest.NewRecorder()
 		// when
 		s.ServeHTTP(rec, req)
 		// then
 		assert.Equal(t, 200, rec.Code)
-		assert.Equal(t, "pong!", rec.Body.String())
 	})
 
 	t.Run("POST and GET", func(t *testing.T) {
