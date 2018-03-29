@@ -28,4 +28,11 @@ spec:
           valueFrom:
             secretKeyRef:
               name: database-secret-config
-              key: password
+              key: password 
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-pv-claim
+      volumes:
+      - name: postgres-pv-claim
+        persistentVolumeClaim:
+          claimName: postgres-pv-claim
