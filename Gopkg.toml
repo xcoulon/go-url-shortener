@@ -3,7 +3,7 @@
 # Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
 # for detailed Gopkg.toml documentation.
 #
-# required = ["github.com/user/thing/cmd/thing"]
+required = ["github.com/pelletier/go-toml"]
 # ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
 #
 # [[constraint]]
@@ -55,7 +55,11 @@
 
 [[constraint]]
   name = "github.com/spf13/viper"
-  version = "1.0.0"
+  revision = "62edee319679b6ceaec16de03b966102d2dea709"
+
+[[constraint]]
+  name = "github.com/pelletier/go-toml"
+  version = "v1.2.0"
 
 [[constraint]]
   name = "github.com/stretchr/testify"

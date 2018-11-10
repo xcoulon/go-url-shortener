@@ -17,9 +17,15 @@ import (
 func main() {
 	// load the logging configuration and init the logger
 	// logrus.SetFormatter(&logrus.JSONFormatter{})
+
 	config := configuration.New()
 	// load the configuration and init the storage
-	db, err := connection.New(config)
+	err := connection.SetupUUIDExtension(config)
+	if err != nil {
+		logrus.Fatalf("failed to start: %s", err.Error())
+	}
+	// load the configuration and init the storage
+	db, err := connection.NewUserConnection(config)
 	if err != nil {
 		logrus.Fatalf("failed to start: %s", err.Error())
 	}

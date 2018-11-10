@@ -15,9 +15,6 @@ type Repository struct {
 
 // New returns a new repository configured with the given 'db'
 func New(db *gorm.DB) *Repository {
-	logrus.Info(`Adding the 'uuid-ossp' extension...`)
-	// ensure that the Postgres DB has the "uuid-ossp" extension to generate UUIDs as the primary keys for the ShortenedURL records
-	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 	db.AutoMigrate(&ShortenedURL{})
 	return &Repository{db: db}
 }

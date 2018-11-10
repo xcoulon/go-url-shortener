@@ -1,7 +1,7 @@
-apiVersion: apps/v1beta1
-kind: Deployment
+kind: "DeploymentConfig"
+apiVersion: "v1"
 metadata:
-  name: webapp
+  name: "webapp"
 spec:
   template:
     metadata:
@@ -14,13 +14,14 @@ spec:
             name: app-config
       initContainers:
       - name: check-db-ready
-        image: postgres:9.6.5
-        command: ['sh', '-c', 
+        image: centos/postgresql-10-centos7
+        command: ['sh', '-c', "-i",
           'until pg_isready -h postgres -p 5432; 
           do echo waiting for database; sleep 2; done;']
+
       containers:
-      - image: xcoulon/go-url-shortener:0.2.0
-        name: go-url-shortener
+      - name: webapp
+        image: 172.30.1.1:5000/sandbox/webapp:latest
         volumeMounts:
         - name: config-volume
           mountPath: /etc/config
@@ -48,5 +49,24 @@ spec:
             secretKeyRef:
               name: database-secret-config
               key: password
-        
-      
+        - name: POSTGRES_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret-config
+              key: admin_password
+  replicas: 1
+  triggers:
+    - type: "ConfigChange"
+    - type: "ImageChange" 
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - "webapp"
+        from:
+          kind: "ImageStreamTag"
+          name: "webapp:latest"
+  strategy: 
+    type: "Rolling"
+  paused: false 
+  revisionHistoryLimit: 5 
+  minReadySeconds: 0

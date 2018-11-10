@@ -23,9 +23,11 @@ const (
 	// default values as well as to get each value
 	varPostgresHost                 = "postgres.host"
 	varPostgresPort                 = "postgres.port"
-	varPostgresUser                 = "postgres.user"
 	varPostgresDatabase             = "postgres.database"
+	varPostgresUser                 = "postgres.user"
 	varPostgresPassword             = "postgres.password"
+	varPostgresSuperUser            = "postgres.superuser"
+	varPostgresAdminPassword        = "postgres.admin.password"
 	varPostgresSSLMode              = "postgres.sslmode"
 	varPostgresConnectionTimeout    = "postgres.connection.timeout"
 	varPostgresTransactionTimeout   = "postgres.transaction.timeout"
@@ -50,6 +52,7 @@ func New() *Configuration {
 	c.v.SetDefault(varPostgresPort, 5432)
 	c.v.SetDefault(varPostgresDatabase, "postgres")
 	c.v.SetDefault(varPostgresUser, "postgres")
+	c.v.SetDefault(varPostgresSuperUser, "postgres")
 	c.v.SetDefault(varPostgresSSLMode, "disable")
 	c.v.SetDefault(varPostgresConnectionTimeout, 5)
 	c.v.SetDefault(varPostgresConnectionMaxIdle, -1)
@@ -101,19 +104,29 @@ func (c *Configuration) GetPostgresPort() int64 {
 	return c.v.GetInt64(varPostgresPort)
 }
 
-// GetPostgresUser returns the postgres user as set via default, config file, or environment variable
-func (c *Configuration) GetPostgresUser() string {
-	return c.v.GetString(varPostgresUser)
-}
-
 // GetPostgresDatabase returns the postgres database as set via default, config file, or environment variable
 func (c *Configuration) GetPostgresDatabase() string {
 	return c.v.GetString(varPostgresDatabase)
 }
 
+// GetPostgresUser returns the postgres user as set via default, config file, or environment variable
+func (c *Configuration) GetPostgresUser() string {
+	return c.v.GetString(varPostgresUser)
+}
+
 // GetPostgresPassword returns the postgres password as set via default, config file, or environment variable
 func (c *Configuration) GetPostgresPassword() string {
 	return c.v.GetString(varPostgresPassword)
+}
+
+// GetPostgresSuperUser returns the postgres superuser as set via default, config file, or environment variable
+func (c *Configuration) GetPostgresSuperUser() string {
+	return c.v.GetString(varPostgresSuperUser)
+}
+
+// GetPostgresAdminPassword returns the postgres password as set via default, config file, or environment variable
+func (c *Configuration) GetPostgresAdminPassword() string {
+	return c.v.GetString(varPostgresAdminPassword)
 }
 
 // GetPostgresSSLMode returns the postgres sslmode as set via default, config file, or environment variable
@@ -156,6 +169,18 @@ func (c *Configuration) GetPostgresConfig() string {
 		c.GetPostgresPort(),
 		c.GetPostgresUser(),
 		c.GetPostgresPassword(),
+		c.GetPostgresDatabase(),
+		c.GetPostgresSSLMode(),
+		c.GetPostgresConnectionTimeout())
+}
+
+//GetPostgresAdminConfig returns the settings for opening a new connection on a PostgreSQL server
+func (c *Configuration) GetPostgresAdminConfig() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s connect_timeout=%d",
+		c.GetPostgresHost(),
+		c.GetPostgresPort(),
+		c.GetPostgresSuperUser(),
+		c.GetPostgresAdminPassword(),
 		c.GetPostgresDatabase(),
 		c.GetPostgresSSLMode(),
 		c.GetPostgresConnectionTimeout())

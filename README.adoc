@@ -3,3 +3,41 @@
 Sample URL shortener written in Golang, to deploy on Kubernetes/Minikube by following the instructions in https://medium.com/@xcoulon/deploying-your-first-web-app-on-minikube-6e98d2884b3a[this article].
 
 License: Apache License 2.0
+
+== Deployment on OpenShift
+
+run the following commands:
+
+```
+# deploy the database secrets (credentials)
+oc apply -f templates/database-secrets.yml
+# deploy the database (postgres 10)
+oc apply -f templates/database-deployment.openshift.yml
+# deploy the internal service
+oc apply -f templates/database-service.yml
+
+# create the web app config 
+oc apply -f templates/webapp-config.yaml
+# create a deployment config for the web app
+oc apply -f templates/webapp-deploymentconfig.yml
+# expose the webapp as a node service
+oc apply -f templates/webapp-service.yml
+
+# rollout the latest version of the webapp (if an image already exists in the container registry)
+oc rollout latest deploymentconfigs/webapp
+
+```
+
+Once the deployment config is in place, just deploy a new version of the webapp with `make minishift-image && make push-minishift`
+
+== TODO 
+
+- see howe to run the tests during the build
+- see how to PVC support for the storage, which fail for now with the following error (when running with the `developer` account):
+```
+> oc apply -f templates/database-storage.yml
+persistentvolumeclaim "postgres-pv-claim" unchanged
+Error from server (Forbidden): error when retrieving current configuration of:
+&{0xc420d9aa80 0xc420aa01c0  postgres-pv templates/database-storage.yml 0xc4213e30b0  false}
+from server for: "templates/database-storage.yml": persistentvolumes "postgres-pv" is forbidden: User "developer" cannot get persistentvolumes at the cluster scope: User "developer" cannot get persistentvolumes at the cluster scope
+```

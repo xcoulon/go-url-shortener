@@ -16,7 +16,7 @@ import (
 
 func TestServer(t *testing.T) {
 	config := configuration.New()
-	db, err := connection.New(config)
+	db, err := connection.NewUserConnection(config)
 	require.Nil(t, err)
 	repository := storage.New(db)
 	s := server.New(repository)

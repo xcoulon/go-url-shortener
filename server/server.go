@@ -32,10 +32,10 @@ func New(repository *storage.Repository) *echo.Echo {
 	return e
 }
 
-// Ping returns a basic `ping/pong` handler
+// Status returns a basic `ping/pong` handler
 func Status() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.String(http.StatusOK, fmt.Sprintf("build.time: %s - build.commit: %s", configuration.BuildTime, configuration.BuildCommit))
+		return c.String(http.StatusOK, fmt.Sprintf("build.time: %s - build.commit: %s 👷‍♂️", configuration.BuildTime, configuration.BuildCommit))
 	}
 }
 
